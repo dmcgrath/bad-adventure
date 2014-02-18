@@ -59,8 +59,6 @@ private:
   int id;
   std::map<char, Room*> links;
   std::map<char, Direction*> directions;
-  Room *north;
-  Room *south;
   std::string name, description, error_reason;
 };
 
@@ -100,6 +98,7 @@ private:
 
   std::map<int, Room*> rooms;
   Room *current_room;
+  Player *player;
 
   std::string error_reason;
 };

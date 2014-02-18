@@ -63,8 +63,6 @@ char Direction::GetDirection() const {
 Room::Room() {
   name = "Empty Room";
   description = "Just an empty, uninitialized room.";
-  north = NULL;
-  south = NULL;
 }
 
 Room::Room(std::string name, std::string description, int id) {
@@ -185,6 +183,7 @@ World::World() {
   rooms[2]->link('n', *rooms[0]);
 
   current_room = rooms[0];
+  player = new Player();
 }
 
 World::World(const char* filename) {
@@ -206,6 +205,7 @@ World::World(const char* filename) {
   }
 
   current_room = rooms[0];
+  player = new Player();
 }
 
 void World::add_room(rapidxml::xml_node<> *room_node) {
