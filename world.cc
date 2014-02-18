@@ -3,6 +3,9 @@
  * Author: itcmcgrath
  * 
  * Created on February 16, 2014, 10:21 PM
+ * 
+ * A quick overview of all the classes can be found in the header file.
+ * 
  */
 
 #include <string.h>
@@ -132,6 +135,7 @@ void Room::link(Direction &direction, Room &room) {
   links[dir] = &room;
 }
 
+/* Briefly described in the header file. */
 std::vector<std::string> Room::ListDirections() {
   std::vector<std::string> list_directions;
   for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); it++) {
@@ -171,8 +175,12 @@ int Player::GetHealth() const {
   return health;
 }
 
+/* 
+ * This default constructor will set up a very basic dummy world.
+ * Generally, you will want to use the World(const char*) constructor as it
+ * will parse an XML file to generate the world data.
+ */
 World::World() {
-  // dummy setup
   rooms[0] = new Room("Spawn Room", "Home, sweet, home!", 0);
   rooms[1] = new Room("North Chamber", "Very northern", 1);
   rooms[2] = new Room("South Chamber", "A chamber that is decidedly south of the Spawn Room", 2);
@@ -186,6 +194,10 @@ World::World() {
   player = new Player();
 }
 
+/* 
+ * Generate the world from an XML configuration file. See world.xml for an
+ * example.
+ */
 World::World(const char* filename) {
   world_file = new rapidxml::file<>(filename);
   world_doc.parse<0>(world_file->data());
@@ -208,6 +220,9 @@ World::World(const char* filename) {
   player = new Player();
 }
 
+/*
+ * A private method used to add a room from an XML definition.
+ */
 void World::add_room(rapidxml::xml_node<> *room_node) {
   int id = atoi(room_node->first_attribute("id")->value());
   rooms[id] = new Room(room_node->first_attribute("name")->value(),
@@ -215,6 +230,9 @@ void World::add_room(rapidxml::xml_node<> *room_node) {
           id);
 }
 
+/*
+ * A private method used to add a link between rooms from an XML definition.
+ */
 void World::add_link(rapidxml::xml_node<> *link_node) {
   int from_id, to_id;
 
@@ -249,6 +267,11 @@ bool World::MoveRoom(char direction) {
   return true;
 }
 
+/*
+ * Move commands are inputted by the user in the form of:
+ * m:<direction> where <direction> is the char to denote a direction. E.g.:
+ *    m:n
+ */
 bool World::DoCommand(std::string command) {
   std::vector<std::string> elems = split(command, ';');
 
@@ -256,14 +279,9 @@ bool World::DoCommand(std::string command) {
     return MoveRoom(elems[1][0]);
 }
 
-std::string World::GetErrorReason() const {
-  return error_reason;
-}
-
-std::vector<std::string> World::ListDirections() {
-  return current_room->ListDirections();
-}
-
+/*
+ * Used by DoCommand to separate out the command type from the command parameter
+ */
 std::vector<std::string> World::split(const std::string &s, char delim) {
   std::vector<std::string> elems;
   std::stringstream ss(s);
@@ -272,4 +290,12 @@ std::vector<std::string> World::split(const std::string &s, char delim) {
     elems.push_back(item);
   }
   return elems;
+}
+
+std::string World::GetErrorReason() const {
+  return error_reason;
+}
+
+std::vector<std::string> World::ListDirections() {
+  return current_room->ListDirections();
 }
