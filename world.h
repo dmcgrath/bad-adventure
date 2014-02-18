@@ -3,6 +3,49 @@
  * Author: itcmcgrath
  *
  * Created on February 16, 2014, 10:21 PM
+ * 
+ * Contained are the various classes required to represent the complete world
+ * in Bad Adventure.
+ * 
+ * Class Direction
+ * 
+ * A simple class that represents a possible direction that a player can move
+ * from one room to another. It stores both the char that the movement system
+ * uses to identify it as well as a description to be displayed.
+ * 
+ * TODO: Add a lock system that optionally requires the player to possess a
+ *       specific item to move in that direction. Add this after Items are
+ *       implemented.
+ * 
+ * Class Room
+ * 
+ * This class stores all the aspects that comprise a room in Bad Adventure.
+ * 
+ * This includes name, description and possible directions to move to other
+ * rooms.
+ * 
+ * The Room class handles verification of the ability to move in a certain
+ * direction.
+ * 
+ * TODO: Add Items that can be found and picked up from a Room. Add this after
+ *       the Item class
+ * 
+ * Class Player
+ * 
+ * Player keeps track of player specific information such as health.
+ * 
+ * Since this in not multi-player, it doesn't store the current room. Should
+ * this change, the current room handling should be moved from the World class
+ * into the Player Class.
+ * 
+ * TODO: Keep track of items that have been picked up. Add this after
+ *       the Item class
+ * 
+ * Class World
+ * 
+ * Keep track of the entire world and handle all interactions with it.
+ * 
+ * The World class is also responsible for reading in XML configuration data.
  */
 
 #ifndef WORLD_H
@@ -15,6 +58,13 @@
 #include <map>
 #include "rapidxml_utils.hpp"
 
+/*
+ * See above for a description of the Direction class
+ * 
+ * Note: Several directions (n/s/e/w/u/p) will pre-populate the description
+ *       property when using the Direction(char) constructor. See world.cc
+ *       for details.
+ */
 class Direction {
 public:
 
@@ -33,6 +83,18 @@ private:
   std::string description;
 };
 
+/*
+ * See above for a description of the Room class
+ * 
+ * Note: The Room() constructor will populate name & description with generic
+ *       empty room values.
+ * 
+ * ListDirection returns a string for each direction in the format of:
+ * "(direction_char) description"
+ * 
+ * GetDirection & CheckMove will set an error string on when the request fails.
+ * It can be retrieved with GetErrorReason
+ */
 class Room {
 public:
   Room();
@@ -62,6 +124,10 @@ private:
   std::string name, description, error_reason;
 };
 
+
+/*
+ * See above for a description of the Player class
+ */
 class Player {
 public:
   Player();
@@ -74,6 +140,16 @@ private:
   int health, strength;
 };
 
+/*
+ * See above for a description of the World class
+ * 
+ * Note: The World() constructor contains minimal dummy world data
+ *       initialization. World(cons char*) will parse an XML file to initialize
+ *       the world and is generally how you would initialize it.
+ * 
+ *       If MoveRoom or DoCommand fails, an error reason string can be retrieved
+ *       with the GetErrorReason method.
+ */
 class World {
 public:
   World();
