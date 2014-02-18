@@ -1,0 +1,13 @@
+<world>
+    <rooms>
+        <room id="0" name="Spawn Room" desc="Home, sweet, home!"/>
+        <room id="1" name="North Chamber" desc="Very northern"/>
+        <room id="2" name="South Chamber" desc="A chamber that is decidedly south of the Spawn Room"/>
+    </rooms>
+    <links>
+        <link from="0" dir="n" to="1"/>
+        <link from="1" dir="s" to="0"/>
+        <link from="0" dir="s" to="2"/>
+        <link from="2" dir="n" to="0"/>
+    </links>
+</world>
