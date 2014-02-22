@@ -74,9 +74,6 @@ Room::Room(std::string name, std::string description, int id) {
   this->id = id;
 }
 
-Room::~Room() {
-}
-
 void Room::SetDescription(std::string description) {
   this->description = description;
 }
@@ -146,13 +143,19 @@ std::vector<std::string> Room::ListDirections() {
   return list_directions;
 }
 
+Room::~Room() {
+  for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); it++) {
+    delete it->second;
+  }
+}
+
 Player::Player() {
   health = 1000;
   strength = 10;
 }
 
 Player::~Player() {
-  
+
 }
 
 std::string Room::GetErrorReason() const {
@@ -246,6 +249,11 @@ World::World(const World & orig) {
 }
 
 World::~World() {
+  for (std::map<int, Room*>::iterator it = rooms.begin(); it != rooms.end(); it++) {
+    delete it->second;
+  }
+  delete player;
+  delete world_file;
 }
 
 std::string World::GetRoomName() const {

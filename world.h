@@ -124,7 +124,6 @@ private:
   std::string name, description, error_reason;
 };
 
-
 /*
  * See above for a description of the Player class
  */
