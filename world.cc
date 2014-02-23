@@ -112,6 +112,22 @@ int Item::GetHealth() const {
   return health;
 }
 
+void Item::SetDescription(std::string description) {
+  this->description = description;
+}
+
+std::string Item::GetDescription() const {
+  return description;
+}
+
+void Item::SetName(std::string name) {
+  this->name = name;
+}
+
+std::string Item::GetName() const {
+  return name;
+}
+
 Room::Room() {
   name = "Empty Room";
   description = "Just an empty, uninitialized room.";
@@ -182,6 +198,47 @@ std::vector<std::string> Room::ListDirections() {
     list_directions.push_back(temp.str());
   }
   return list_directions;
+}
+
+void Room::AddItem(Item &item) {
+  Item *room_item = new Item();
+
+  room_item->SetName(item.GetName());
+  room_item->SetDescription(item.GetDescription());
+  room_item->SetHealth(item.GetHealth());
+  room_item->SetStrength(item.GetStrength());
+  room_item->SetSecret(item.GetSecret());
+
+  items.push_back(room_item);
+}
+
+Item* Room::ViewItem(unsigned long id) {
+  if (id < items.size()) {
+    return items[id];
+  } else {
+    error_reason = "That item doesn't exist!";
+    return NULL;
+  }
+}
+
+Item* Room::RetrieveItem(unsigned long id) {
+  if (id < items.size()) {
+    return items[id];
+    items.erase(items.begin() + id);
+  } else {
+    error_reason = "That item doesn't exist!";
+    return NULL;
+  }
+}
+
+std::vector<std::string> Room::ListItems() {
+  std::vector<std::string> list_items;
+  for (std::map<char, Item*>::iterator it = items.begin(); it != items.end(); it++) {
+    std::stringstream temp;
+    temp << "(" << it->first << ") " << it->second->GetDescription();
+    list_items.push_back(temp.str());
+  }
+  return list_items;
 }
 
 Room::~Room() {

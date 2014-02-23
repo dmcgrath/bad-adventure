@@ -17,6 +17,10 @@
  *       specific item to move in that direction. Add this after Items are
  *       implemented.
  * 
+ * Class Item
+ * 
+ * Item stores attributes for a single item in the game.
+ * 
  * Class Room
  * 
  * This class stores all the aspects that comprise a room in Bad Adventure.
@@ -27,8 +31,9 @@
  * The Room class handles verification of the ability to move in a certain
  * direction.
  * 
- * TODO: Add Items that can be found and picked up from a Room. Add this after
- *       the Item class
+ * IMPORTANT: The RemoveItem() method transfers ownership of the item being
+ * removed to whatever called the method. This means the callee must handle
+ * deleting the memory that item once it has finished with it.
  * 
  * Class Player
  * 
@@ -120,6 +125,9 @@ private:
  * ListDirection returns a string for each direction in the format of:
  * "(direction_char) description"
  * 
+ * ListItems returns a string for each item in the format of:
+ * "(number) description"
+ * 
  * GetDirection & CheckMove will set an error string on when the request fails.
  * It can be retrieved with GetErrorReason
  */
@@ -140,6 +148,12 @@ public:
   bool CheckMove(char direction);
   std::vector<std::string> ListDirections();
 
+  void AddItem(Item &item);
+  Item *ViewItem(unsigned long id);
+  Item *RetrieveItem(unsigned long id);
+  std::vector<std::string> ListItems();
+  
+  
   void SetId(int id);
   int GetId() const;
 
@@ -148,6 +162,7 @@ private:
   int id;
   std::map<char, Room*> links;
   std::map<char, Direction*> directions;
+  std::vector<Item*> items;
   std::string name, description, error_reason;
 };
 
