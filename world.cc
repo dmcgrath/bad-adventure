@@ -43,6 +43,11 @@ Direction::Direction(char direction, std::string description) {
   this->description = description;
 }
 
+Direction::Direction(Direction &direction) {
+  this->description = direction.description;
+  this->direction = direction.direction;
+}
+
 Direction::~Direction() {
 
 }
@@ -159,18 +164,11 @@ bool Room::CheckMove(char direction) {
   return true;
 }
 
-void Room::link(char direction, Room &room) {
+void Room::link(Direction &dir, Room &room) {
+  char direction = dir.GetDirection();
   std::map<char, Direction*>::iterator it = directions.find(direction);
   if (it == directions.end())
-    directions[direction] = new Direction(direction);
-
-  links[direction] = &room;
-}
-
-void Room::link(char direction, std::string description, Room &room) {
-  std::map<char, Direction*>::iterator it = directions.find(direction);
-  if (it == directions.end())
-    directions[direction] = new Direction(direction, description);
+    directions[direction] = new Direction(dir);
 
   links[direction] = &room;
 }
@@ -228,13 +226,6 @@ int Player::GetHealth() const {
  */
 World::World() {
   rooms[0] = new Room("Spawn Room", "Home, sweet, home!", 0);
-  rooms[1] = new Room("North Chamber", "Very northern", 1);
-  rooms[2] = new Room("South Chamber", "A chamber that is decidedly south of the Spawn Room", 2);
-
-  rooms[0]->link('n', *rooms[1]);
-  rooms[1]->link('s', *rooms[0]);
-  rooms[0]->link('s', *rooms[2]);
-  rooms[2]->link('n', *rooms[0]);
 
   current_room = rooms[0];
   player = new Player();
@@ -282,17 +273,19 @@ void World::add_room(rapidxml::xml_node<> *room_node) {
 void World::add_link(rapidxml::xml_node<> *link_node) {
   int from_id, to_id;
   rapidxml::xml_attribute<> *desc = NULL;
+  Direction direction;
 
   from_id = atoi(link_node->first_attribute("from")->value());
   to_id = atoi(link_node->first_attribute("to")->value());
 
+  direction.SetDirection(link_node->first_attribute("dir")->value()[0]);
+
   desc = link_node->first_attribute("desc");
-  if (desc == NULL) {
-    rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], *rooms[to_id]);
-  } else {
-    rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], desc->value(), *rooms[to_id]);
+  if (desc != NULL) {
+    direction.SetDescription(desc->value());
   }
 
+  rooms[from_id]->link(direction, *rooms[to_id]);
 }
 
 World::World(const World & orig) {
