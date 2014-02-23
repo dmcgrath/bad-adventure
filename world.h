@@ -179,6 +179,7 @@ public:
   int GetHealth() const;
 private:
   int health, strength;
+  std::vector<Item*> items;
 };
 
 /*
@@ -201,6 +202,7 @@ public:
   std::string GetRoomName() const;
   std::string GetRoomDescription() const;
   std::vector<std::string> ListDirections();
+  std::vector<std::string> ListRoomItems();
 
   bool MoveRoom(char direction);
   bool DoCommand(std::string command);
@@ -209,8 +211,9 @@ public:
 private:
   rapidxml::file<> *world_file;
   rapidxml::xml_document<> world_doc;
-  void add_room(rapidxml::xml_node<> *room_node);
-  void add_link(rapidxml::xml_node<> *link_node);
+  void AddRoom(rapidxml::xml_node<> *room_node);
+  void AddLink(rapidxml::xml_node<> *link_node);
+  
   std::vector<std::string> split(const std::string &s, char delim);
 
   std::map<int, Room*> rooms;

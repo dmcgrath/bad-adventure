@@ -192,7 +192,7 @@ void Room::LinkRooms(Direction &dir, Room &room) {
 /* Briefly described in the header file. */
 std::vector<std::string> Room::ListDirections() {
   std::vector<std::string> list_directions;
-  for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); it++) {
+  for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); ++it) {
     std::stringstream temp;
     temp << "(" << it->first << ") " << it->second->GetDescription();
     list_directions.push_back(temp.str());
@@ -233,16 +233,17 @@ Item* Room::RetrieveItem(unsigned long id) {
 
 std::vector<std::string> Room::ListItems() {
   std::vector<std::string> list_items;
-  for (std::map<char, Item*>::iterator it = items.begin(); it != items.end(); it++) {
+  unsigned long max_items = items.size();
+  for (unsigned long index=0; index<max_items; ++index) {
     std::stringstream temp;
-    temp << "(" << it->first << ") " << it->second->GetDescription();
+    temp << "(" << index << ") " << items[index]->GetDescription();
     list_items.push_back(temp.str());
   }
   return list_items;
 }
 
 Room::~Room() {
-  for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); it++) {
+  for (std::map<char, Direction*>::iterator it = directions.begin(); it != directions.end(); ++it) {
     delete it->second;
   }
 }
@@ -301,13 +302,13 @@ World::World(const char* filename) {
   base_node = base_node->first_node("rooms");
 
   for (room_node = base_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
-    add_room(room_node);
+    AddRoom(room_node);
   }
 
   base_node = base_node->parent();
   base_node = base_node->first_node("links");
   for (link_node = base_node->first_node("link"); link_node; link_node = link_node->next_sibling("link")) {
-    add_link(link_node);
+    AddLink(link_node);
   }
 
   current_room = rooms[0];
@@ -317,7 +318,7 @@ World::World(const char* filename) {
 /*
  * A private method used to add a room from an XML definition.
  */
-void World::add_room(rapidxml::xml_node<> *room_node) {
+void World::AddRoom(rapidxml::xml_node<> *room_node) {
   int id = atoi(room_node->first_attribute("id")->value());
   rooms[id] = new Room(room_node->first_attribute("name")->value(),
           room_node->first_attribute("desc")->value(),
@@ -327,7 +328,7 @@ void World::add_room(rapidxml::xml_node<> *room_node) {
 /*
  * A private method used to add a link between rooms from an XML definition.
  */
-void World::add_link(rapidxml::xml_node<> *link_node) {
+void World::AddLink(rapidxml::xml_node<> *link_node) {
   int from_id, to_id;
   rapidxml::xml_attribute<> *desc = NULL;
   Direction direction;
@@ -349,7 +350,7 @@ World::World(const World & orig) {
 }
 
 World::~World() {
-  for (std::map<int, Room*>::iterator it = rooms.begin(); it != rooms.end(); it++) {
+  for (std::map<int, Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
     delete it->second;
   }
   delete player;
@@ -411,4 +412,8 @@ std::string World::GetErrorReason() const {
 
 std::vector<std::string> World::ListDirections() {
   return current_room->ListDirections();
+}
+
+std::vector<std::string> World::ListRoomItems() {
+  return current_room->ListItems();
 }

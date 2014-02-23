@@ -29,16 +29,23 @@ int main(int argc, char** argv) {
     else {
       if (input.compare("look") == 0) {
         std::vector<std::string> directions = world->ListDirections();
-        for (unsigned long int direction = 0; direction < directions.size(); direction++) {
+        for (unsigned long int direction = 0; direction < directions.size(); ++direction) {
           std::cout << directions[direction] << std::endl;
         }
       } else {
-        if (world->DoCommand(input)) {
-          std::cout << "You are now in: " << world->GetRoomName() << std::endl;
-          std::cout << world->GetRoomDescription() << std::endl;
+        if (input.compare("search") == 0) {
+          std::vector<std::string> items = world->ListRoomItems();
+          for (unsigned long int index = 0; index < items.size(); ++index) {
+            std::cout << items[index] << std::endl;
+          }
+        } else {
+          if (world->DoCommand(input)) {
+            std::cout << "You are now in: " << world->GetRoomName() << std::endl;
+            std::cout << world->GetRoomDescription() << std::endl;
 
-        } else
-          std::cout << world->GetErrorReason() << std::endl;
+          } else
+            std::cout << world->GetErrorReason() << std::endl;
+        }
       }
     }
   }
