@@ -3,19 +3,28 @@
         <room id="0" name="A dream" desc="Are you ready to awake?"/>
         <room id="1" name="Statue Room" desc="You are in a dark room with a statue in each corner"/>
         <room id="1001" name="Hallway west of the Statue Room" desc=""/> 
-        <room id="2" name="Upper vault" desc="This room is full of rusted metal scraps"/>
+        <room id="2" name="Upper Vault" desc="This room is full of rusted metal scraps"/>
         <room id="3" name="North Den" desc="The ground is covered in decaying straw"/>
         <room id="4" name="Center Den" desc="The ground is covered in decaying straw"/>
+        <room id="5" name="Cramped Alcove" desc="A cramped Alcove off the winding Corridor"/>
+        <room id="6" name="Storage Room" desc="This looks like it used to be a storage room"/>
+        <room id="7" name="Worship Chamber" desc="The room is circular with small pits filled with fire scarring the walls"/>
     </rooms>
     <links>
         <link from="0" dir="a" desc="Awake..." to="1"/>
         <link from="1" dir="e" desc="A door to the East" to="1001"/>
+        <link from="1" dir="n" desc="A winding corridor to the North that seems to head Wast" to="5"/>
         <link from="1001" dir="w" desc="A door to the West" to="1"/>
         <link from="1001" dir="u" desc="Stairs heading North, next to the Western door" to="2"/>
         <link from="1001" dir="n" desc="A door to the North on the Eastern side" to="3"/>
         <link from="1001" dir="s" desc="A door to the South on the Eastern side" to="4"/>
         <link from="2" dir="d" desc="Stairs back down to the Hallway" to="1001"/>
         <link from="3" dir="s" desc="A door back to the Hallway" to="1001"/>
-        <link from="4" dir="n" desc="A door back to the Hallway" to="1001"/>        
+        <link from="4" dir="n" desc="A door back to the Hallway" to="1001"/>
+        <link from="5" dir="e" desc="A winding corridor to the East" to="1"/>
+        <link from="5" dir="n" desc="A door to the North" to="6"/>
+        <link from="5" dir="w" desc="The last part of the winding corridor heading West" to="7"/>
+        <link from="6" dir="s" desc="A door back to the corridor and alcove" to="5"/>
+        <link from="7" dir="n" desc="The door leading back to the winding corridor" to="5"/>
     </links>
 </world>
