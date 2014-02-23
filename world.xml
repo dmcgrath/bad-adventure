@@ -1,13 +1,21 @@
 <world>
     <rooms>
-        <room id="0" name="Spawn Room" desc="Home, sweet, home!"/>
-        <room id="1" name="North Chamber" desc="Very northern"/>
-        <room id="2" name="South Chamber" desc="A chamber that is decidedly south of the Spawn Room"/>
+        <room id="0" name="A dream" desc="Are you ready to awake?"/>
+        <room id="1" name="Statue Room" desc="You are in a dark room with a statue in each corner"/>
+        <room id="1001" name="Hallway west of the Statue Room" desc=""/> 
+        <room id="2" name="Upper vault" desc="This room is full of rusted metal scraps"/>
+        <room id="3" name="North Den" desc="The ground is covered in decaying straw"/>
+        <room id="4" name="Center Den" desc="The ground is covered in decaying straw"/>
     </rooms>
     <links>
-        <link from="0" dir="n" to="1"/>
-        <link from="1" dir="s" to="0"/>
-        <link from="0" dir="s" to="2"/>
-        <link from="2" dir="n" to="0"/>
+        <link from="0" dir="a" desc="Awake..." to="1"/>
+        <link from="1" dir="e" desc="A door to the East" to="1001"/>
+        <link from="1001" dir="w" desc="A door to the West" to="1"/>
+        <link from="1001" dir="u" desc="Stairs heading North, next to the Western door" to="2"/>
+        <link from="1001" dir="n" desc="A door to the North on the Eastern side" to="3"/>
+        <link from="1001" dir="s" desc="A door to the South on the Eastern side" to="4"/>
+        <link from="2" dir="d" desc="Stairs back down to the Hallway" to="1001"/>
+        <link from="3" dir="s" desc="A door back to the Hallway" to="1001"/>
+        <link from="4" dir="n" desc="A door back to the Hallway" to="1001"/>        
     </links>
 </world>
