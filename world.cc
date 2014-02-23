@@ -292,6 +292,11 @@ bool World::DoCommand(std::string command) {
 
   if (elems[0].compare("m") == 0)
     return MoveRoom(elems[1][0]);
+  if (command.length() == 1)
+    return MoveRoom(command[0]);
+  
+  error_reason = "I don't understand";
+  return false;
 }
 
 /*
