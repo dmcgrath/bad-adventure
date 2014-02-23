@@ -63,6 +63,50 @@ char Direction::GetDirection() const {
   return direction;
 }
 
+Item::Item() {
+  name = "An nondescript item";
+  description = "Unremarkable in every way";
+  health = 0;
+  strength = 0;
+  secret = 0;
+}
+
+Item::Item(std::string name, std::string description, int health, int strength, int secret) {
+  this->name = name;
+  this->description = description;
+  this->health = health;
+  this->strength = strength;
+  this->secret = secret;
+}
+
+Item::~Item() {
+
+}
+
+void Item::SetSecret(int secret) {
+  this->secret = secret;
+}
+
+int Item::GetSecret() const {
+  return secret;
+}
+
+void Item::SetStrength(int strength) {
+  this->strength = strength;
+}
+
+int Item::GetStrength() const {
+  return strength;
+}
+
+void Item::SetHealth(int health) {
+  this->health = health;
+}
+
+int Item::GetHealth() const {
+  return health;
+}
+
 Room::Room() {
   name = "Empty Room";
   description = "Just an empty, uninitialized room.";
@@ -243,13 +287,12 @@ void World::add_link(rapidxml::xml_node<> *link_node) {
   to_id = atoi(link_node->first_attribute("to")->value());
 
   desc = link_node->first_attribute("desc");
-  if(desc == NULL) {
+  if (desc == NULL) {
     rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], *rooms[to_id]);
-  }
-  else {
+  } else {
     rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], desc->value(), *rooms[to_id]);
   }
-    
+
 }
 
 World::World(const World & orig) {
@@ -294,7 +337,7 @@ bool World::DoCommand(std::string command) {
     return MoveRoom(elems[1][0]);
   if (command.length() == 1)
     return MoveRoom(command[0]);
-  
+
   error_reason = "I don't understand";
   return false;
 }

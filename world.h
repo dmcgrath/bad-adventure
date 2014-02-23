@@ -84,6 +84,33 @@ private:
 };
 
 /*
+ * 
+ * 
+ * 
+ * 
+ */
+class Item {
+public:
+  Item();
+  Item(std::string name, std::string description, int health, int strength, int secret);
+  virtual ~Item();
+
+  void SetSecret(int secret);
+  int GetSecret() const;
+  void SetStrength(int strength);
+  int GetStrength() const;
+  void SetHealth(int health);
+  int GetHealth() const;
+  void SetDescription(std::string description);
+  std::string GetDescription() const;
+  void SetName(std::string name);
+  std::string GetName() const;
+private:
+  std::string name, description;
+  int health, strength, secret;
+};
+
+/*
  * See above for a description of the Room class
  * 
  * Note: The Room() constructor will populate name & description with generic
