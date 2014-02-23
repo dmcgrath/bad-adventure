@@ -164,7 +164,7 @@ bool Room::CheckMove(char direction) {
   return true;
 }
 
-void Room::link(Direction &dir, Room &room) {
+void Room::LinkRooms(Direction &dir, Room &room) {
   char direction = dir.GetDirection();
   std::map<char, Direction*>::iterator it = directions.find(direction);
   if (it == directions.end())
@@ -285,7 +285,7 @@ void World::add_link(rapidxml::xml_node<> *link_node) {
     direction.SetDescription(desc->value());
   }
 
-  rooms[from_id]->link(direction, *rooms[to_id]);
+  rooms[from_id]->LinkRooms(direction, *rooms[to_id]);
 }
 
 World::World(const World & orig) {

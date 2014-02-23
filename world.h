@@ -131,7 +131,7 @@ public:
 
   void SetDescription(std::string description);
   void SetName(std::string name);
-  void link(Direction &dir, Room &room);
+  void LinkRooms(Direction &dir, Room &room);
 
   std::string GetDescription() const;
   std::string GetName() const;
