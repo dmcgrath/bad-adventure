@@ -123,13 +123,12 @@ void Room::link(char direction, Room &room) {
   links[direction] = &room;
 }
 
-void Room::link(Direction &direction, Room &room) {
-  char dir = direction.GetDirection();
-  std::map<char, Direction*>::iterator it = directions.find(dir);
+void Room::link(char direction, std::string description, Room &room) {
+  std::map<char, Direction*>::iterator it = directions.find(direction);
   if (it == directions.end())
-    directions[dir] = &direction;
+    directions[direction] = new Direction(direction, description);
 
-  links[dir] = &room;
+  links[direction] = &room;
 }
 
 /* Briefly described in the header file. */
@@ -238,11 +237,19 @@ void World::add_room(rapidxml::xml_node<> *room_node) {
  */
 void World::add_link(rapidxml::xml_node<> *link_node) {
   int from_id, to_id;
+  rapidxml::xml_attribute<> *desc = NULL;
 
   from_id = atoi(link_node->first_attribute("from")->value());
   to_id = atoi(link_node->first_attribute("to")->value());
 
-  rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], *rooms[to_id]);
+  desc = link_node->first_attribute("desc");
+  if(desc == NULL) {
+    rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], *rooms[to_id]);
+  }
+  else {
+    rooms[from_id]->link(link_node->first_attribute("dir")->value()[0], desc->value(), *rooms[to_id]);
+  }
+    
 }
 
 World::World(const World & orig) {

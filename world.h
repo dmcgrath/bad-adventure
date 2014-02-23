@@ -104,7 +104,7 @@ public:
   void SetDescription(std::string description);
   void SetName(std::string name);
   void link(char direction, Room &room);
-  void link(Direction &direction, Room &room);
+  void link(char direction, std::string description, Room &room);
 
   std::string GetDescription() const;
   std::string GetName() const;
