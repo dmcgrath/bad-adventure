@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
       if (!done) {
         done = true;
         if (world->DoCommand(input)) {
-          std::cout << "You are now in: " << world->GetRoomName() << std::endl;
+          std::cout << "You are now in " << world->GetRoomName() << std::endl;
           std::cout << world->GetRoomDescription() << std::endl;
 
         } else
