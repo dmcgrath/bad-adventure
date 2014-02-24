@@ -213,6 +213,7 @@ private:
   rapidxml::xml_document<> world_doc;
   void AddRoom(rapidxml::xml_node<> *room_node);
   void AddLink(rapidxml::xml_node<> *link_node);
+  void AddItem(rapidxml::xml_node<> *item_node);
   
   std::vector<std::string> split(const std::string &s, char delim);
 

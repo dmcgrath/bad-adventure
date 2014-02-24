@@ -234,9 +234,10 @@ Item* Room::RetrieveItem(unsigned long id) {
 std::vector<std::string> Room::ListItems() {
   std::vector<std::string> list_items;
   unsigned long max_items = items.size();
-  for (unsigned long index=0; index<max_items; ++index) {
+  for (unsigned long index = 0; index < max_items; ++index) {
     std::stringstream temp;
-    temp << "(" << index << ") " << items[index]->GetDescription();
+    temp << "(" << index << ") " << items[index]->GetName() << " - ";
+    temp << items[index]->GetDescription();
     list_items.push_back(temp.str());
   }
   return list_items;
@@ -297,20 +298,25 @@ World::World(const char* filename) {
   world_file = new rapidxml::file<>(filename);
   world_doc.parse<0>(world_file->data());
 
-  rapidxml::xml_node<> *room_node, *link_node;
+  rapidxml::xml_node<> *part_node;
   rapidxml::xml_node<> *base_node = world_doc.first_node("world");
   base_node = base_node->first_node("rooms");
 
-  for (room_node = base_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
-    AddRoom(room_node);
+  for (part_node = base_node->first_node("room"); part_node; part_node = part_node->next_sibling("room")) {
+    AddRoom(part_node);
   }
 
   base_node = base_node->parent();
   base_node = base_node->first_node("links");
-  for (link_node = base_node->first_node("link"); link_node; link_node = link_node->next_sibling("link")) {
-    AddLink(link_node);
+  for (part_node = base_node->first_node("link"); part_node; part_node = part_node->next_sibling("link")) {
+    AddLink(part_node);
   }
 
+  base_node = base_node->parent();
+  base_node = base_node->first_node("items");
+  for (part_node = base_node->first_node("item"); part_node; part_node = part_node->next_sibling("item")) {
+    AddItem(part_node);
+  }
   current_room = rooms[0];
   player = new Player();
 }
@@ -344,6 +350,42 @@ void World::AddLink(rapidxml::xml_node<> *link_node) {
   }
 
   rooms[from_id]->LinkRooms(direction, *rooms[to_id]);
+}
+
+/*
+ * A private method used to add an item into a room from an XML definition.
+ */
+void World::AddItem(rapidxml::xml_node<> *item_node) {
+  int room_id=0;
+  rapidxml::xml_attribute<> *name = NULL, *desc = NULL, *health = NULL,
+          *strength = NULL, *secret = NULL;
+  Item item;
+  
+  room_id = atoi(item_node->first_attribute("room")->value());
+  health = item_node->first_attribute("health");
+  strength = item_node->first_attribute("strength");
+  secret = item_node->first_attribute("secret");
+  name = item_node->first_attribute("name");
+  desc = item_node->first_attribute("desc");
+  
+  if (health!=NULL){
+    item.SetHealth(atoi(health->value()));
+  }
+  if (strength!=NULL){
+    item.SetStrength(atoi(strength->value()));
+  }
+  if (secret!=NULL){
+    item.SetSecret(atoi(secret->value()));
+  }
+
+  if (name != NULL) {
+    item.SetName(name->value());
+  }
+  if (desc != NULL) {
+    item.SetDescription(desc->value());
+  }
+
+  rooms[room_id]->AddItem(item);
 }
 
 World::World(const World & orig) {

@@ -27,4 +27,10 @@
         <link from="6" dir="s" desc="A door back to the corridor and alcove" to="5"/>
         <link from="7" dir="n" desc="The door leading back to the winding corridor" to="5"/>
     </links>
+    <items>
+        <item room="1"/>
+        <item room="1" name="Old MedPack" desc="This should help with any cuts and bruises!" health="10"/>
+        <item room="2" name="Rusty Dagger" desc="Still looks like it would cut" strength="10"/>
+        <item room="4" name="Odd shaped Key" desc="I wonder if this will help out" secret="1"/>
+    </items>
 </world>
