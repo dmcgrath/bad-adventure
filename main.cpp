@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
         } else
           std::cout << world->GetErrorReason() << std::endl;
       }
-
     }
   }
 
