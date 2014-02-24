@@ -99,6 +99,7 @@ class Item {
 public:
   Item();
   Item(std::string name, std::string description, int health, int strength, int secret);
+  Item(const Item &orig);
   virtual ~Item();
 
   void SetSecret(int secret);
@@ -177,7 +178,14 @@ public:
   int GetStrength() const;
   void SetHealth(int health);
   int GetHealth() const;
+  void AddItem(Item &item);
+  bool ConsumeItem(unsigned long id);
+  
+  std::vector<std::string> ListPlayerDetails();
+  std::string GetErrorReason() const;
+  
 private:
+  std::string error_reason;
   int health, strength;
   std::vector<Item*> items;
 };
@@ -203,8 +211,11 @@ public:
   std::string GetRoomDescription() const;
   std::vector<std::string> ListDirections();
   std::vector<std::string> ListRoomItems();
+  std::vector<std::string> ListPlayerDetails();
 
   bool MoveRoom(char direction);
+  bool PickUpItem(unsigned long id);
+  bool ConsumeItem(unsigned long id);
   bool DoCommand(std::string command);
 
   std::string GetErrorReason() const;

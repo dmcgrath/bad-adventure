@@ -30,6 +30,9 @@
     <items>
         <item room="1"/>
         <item room="1" name="Old MedPack" desc="This should help with any cuts and bruises!" health="10"/>
+        <item room="1" name="Old MedPack" desc="This should help with any cuts and bruises!" health="10"/>
+        <item room="1" name="Old MedPack" desc="This should help with any cuts and bruises!" health="10"/>
+        <item room="1" name="Old MedPack" desc="This should help with any cuts and bruises!" health="10"/>
         <item room="2" name="Rusty Dagger" desc="Still looks like it would cut" strength="10"/>
         <item room="4" name="Odd shaped Key" desc="I wonder if this will help out" secret="1"/>
     </items>

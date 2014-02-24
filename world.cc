@@ -84,6 +84,14 @@ Item::Item(std::string name, std::string description, int health, int strength, 
   this->secret = secret;
 }
 
+Item::Item(const Item &orig) {
+  this->name = orig.name;
+  this->description = orig.description;
+  this->health = orig.health;
+  this->strength = orig.strength;
+  this->secret = orig.secret;
+}
+
 Item::~Item() {
 
 }
@@ -223,8 +231,8 @@ Item* Room::ViewItem(unsigned long id) {
 
 Item* Room::RetrieveItem(unsigned long id) {
   if (id < items.size()) {
-    return items[id];
     items.erase(items.begin() + id);
+    return items[id];
   } else {
     error_reason = "That item doesn't exist!";
     return NULL;
@@ -276,6 +284,52 @@ void Player::SetHealth(int health) {
 
 int Player::GetHealth() const {
   return health;
+}
+
+void Player::AddItem(Item &item) {
+  items.push_back(new Item(item));
+  strength += item.GetStrength();
+}
+
+bool Player::ConsumeItem(unsigned long id) {
+  error_reason = "";
+  if (id >= items.size()) {
+    error_reason = "I don't have that item!";
+    return false;
+  } else {
+    if (items[id]->GetHealth() > 0) {
+      health += items[id]->GetHealth();
+      strength -= items[id]->GetStrength();
+      delete items[id];
+      items.erase(items.begin() + id);
+      return true;
+    } else {
+      error_reason = "I fail to see how I can consume this item...";
+      return false;
+    }
+  }
+}
+
+std::vector<std::string> Player::ListPlayerDetails() {
+  std::vector<std::string> list_details;
+  std::stringstream temp;
+
+  temp << "Health: " << health << ". Strength: " << strength;
+  list_details.push_back(temp.str());
+
+  unsigned long max_items = items.size();
+  for (unsigned long index = 0; index < max_items; ++index) {
+    temp.str(std::string());
+    temp.clear();
+    temp << "(" << index << ") " << items[index]->GetName() << " - ";
+    temp << items[index]->GetDescription();
+    list_details.push_back(temp.str());
+  }
+  return list_details;
+}
+
+std::string Player::GetErrorReason() const {
+  return error_reason;
 }
 
 /* 
@@ -356,25 +410,25 @@ void World::AddLink(rapidxml::xml_node<> *link_node) {
  * A private method used to add an item into a room from an XML definition.
  */
 void World::AddItem(rapidxml::xml_node<> *item_node) {
-  int room_id=0;
+  int room_id = 0;
   rapidxml::xml_attribute<> *name = NULL, *desc = NULL, *health = NULL,
           *strength = NULL, *secret = NULL;
   Item item;
-  
+
   room_id = atoi(item_node->first_attribute("room")->value());
   health = item_node->first_attribute("health");
   strength = item_node->first_attribute("strength");
   secret = item_node->first_attribute("secret");
   name = item_node->first_attribute("name");
   desc = item_node->first_attribute("desc");
-  
-  if (health!=NULL){
+
+  if (health != NULL) {
     item.SetHealth(atoi(health->value()));
   }
-  if (strength!=NULL){
+  if (strength != NULL) {
     item.SetStrength(atoi(strength->value()));
   }
-  if (secret!=NULL){
+  if (secret != NULL) {
     item.SetSecret(atoi(secret->value()));
   }
 
@@ -418,6 +472,27 @@ bool World::MoveRoom(char direction) {
   return true;
 }
 
+bool World::PickUpItem(unsigned long id) {
+  Item *item = current_room->RetrieveItem(id);
+
+  if (item == NULL) {
+    error_reason = "I don't see that item";
+    return false;
+  }
+  player->AddItem(*item);
+
+  delete item;
+
+  return true;
+}
+
+bool World::ConsumeItem(unsigned long id) {
+  if(!player->ConsumeItem(id)) {
+    error_reason = player->GetErrorReason();
+    return false;
+  }
+  return true;
+}
 /*
  * Move commands are inputted by the user in the form of:
  * m:<direction> where <direction> is the char to denote a direction. E.g.:
@@ -426,10 +501,18 @@ bool World::MoveRoom(char direction) {
 bool World::DoCommand(std::string command) {
   std::vector<std::string> elems = split(command, ';');
 
-  if (elems[0].compare("m") == 0)
-    return MoveRoom(elems[1][0]);
-  if (command.length() == 1)
+  if (command.length() == 1) {
     return MoveRoom(command[0]);
+  }
+  if (elems[0].compare("m") == 0) {
+    return MoveRoom(elems[1][0]);
+  }
+  if (elems[0].compare("p") == 0) {
+    return PickUpItem(atoi(elems[1].c_str()));
+  }
+  if (elems[0].compare("c") == 0) {
+    return ConsumeItem(atoi(elems[1].c_str()));
+  }
 
   error_reason = "I don't understand";
   return false;
@@ -458,4 +541,8 @@ std::vector<std::string> World::ListDirections() {
 
 std::vector<std::string> World::ListRoomItems() {
   return current_room->ListItems();
+}
+
+std::vector<std::string> World::ListPlayerDetails() {
+  return player->ListPlayerDetails();
 }
